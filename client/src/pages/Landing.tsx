@@ -1,33 +1,51 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Shield, Zap, Phone, Tv, Lightbulb, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export const Landing = () => {
   const { user } = useAuth();
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const stagger = {
+    visible: { transition: { staggerChildren: 0.1 } }
+  };
+
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen bg-[#050505] font-sans text-white selection:bg-primary/30 overflow-x-hidden">
+      
       {/* Navigation */}
-      <nav className="fixed w-full bg-surface/80 backdrop-blur-md z-50 border-b border-gray-100">
+      <motion.nav 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+        className="fixed w-full bg-black/40 backdrop-blur-xl z-50 border-b border-white/5"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
+          <div className="flex justify-between h-20 items-center">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-black border border-white/10 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(8,43,114,0.4)]">
+                <Shield className="w-5 h-5 text-accent" />
               </div>
-              <span className="text-xl font-bold text-primary">Depayhub</span>
+              <span className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
+                DEPAYHUB
+              </span>
             </div>
             <div className="flex items-center gap-4">
               {user ? (
-                <Link to="/dashboard" className="text-sm font-medium text-primary hover:text-secondary transition-colors">
+                <Link to="/dashboard" className="text-sm font-semibold text-gray-300 hover:text-white transition-colors">
                   Go to Dashboard
                 </Link>
               ) : (
                 <>
-                  <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">
-                    Log in
+                  <Link to="/login" className="text-sm font-bold text-gray-400 hover:text-white transition-colors">
+                    Sign in
                   </Link>
-                  <Link to="/register" className="bg-primary text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-secondary transition-colors shadow-sm">
+                  <Link to="/register" className="bg-white/10 border border-white/10 text-white text-sm font-bold px-5 py-2.5 rounded-lg hover:bg-white/20 transition-all backdrop-blur-md">
                     Create Account
                   </Link>
                 </>
@@ -35,132 +53,181 @@ export const Landing = () => {
             </div>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Hero Section */}
-      <main className="pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pb-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          
-          {/* Background Decorative Blobs */}
-          <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
-          <div className="absolute top-0 -right-4 w-72 h-72 bg-orange-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-8 left-20 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
+      <main className="relative pt-32 pb-20 lg:pt-48 lg:pb-32">
+        {/* Deep Glowing Background Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/20 rounded-full mix-blend-screen filter blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent/20 rounded-full mix-blend-screen filter blur-[120px] translate-x-1/3 -translate-y-1/3" />
+        <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] bg-[#0A0A0A] rounded-full mix-blend-multiply filter blur-[100px] -translate-x-1/2 -translate-y-1/2 z-0" />
 
-          <div className="text-center relative z-10">
-            <h1 className="text-4xl sm:text-6xl font-extrabold text-gray-900 tracking-tight mb-8">
-              Your Ultimate <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Bill Payment Partner</span>
-            </h1>
-            <p className="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto mb-10">
-              Instantly purchase airtime, data, cable TV subscriptions, and electricity. Fast, secure, and reliable transactions anytime, anywhere.
-            </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <span className="text-sm font-semibold text-gray-300 tracking-wide">The future of bill payments</span>
+            </motion.div>
             
-            <div className="flex justify-center gap-4">
+            <motion.h1 variants={fadeUp} className="text-5xl sm:text-7xl lg:text-8xl font-black text-white tracking-tighter leading-[1.1] mb-6">
+              Your Digital <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-accent">Command Center.</span>
+            </motion.h1>
+            
+            <motion.p variants={fadeUp} className="mt-6 text-xl sm:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
+              Boost social media, get virtual numbers, buy data & airtime, and more — all from one dashboard.
+            </motion.p>
+            
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row justify-center gap-4">
               {user ? (
-                <Link to="/dashboard" className="bg-primary text-white font-medium px-8 py-4 rounded-xl shadow-lg hover:bg-secondary transition-all hover:-translate-y-1 flex items-center gap-2">
-                  Go to Dashboard <ChevronRight className="w-5 h-5" />
+                <Link to="/dashboard" className="bg-primary text-white font-bold px-10 py-5 rounded-2xl shadow-[0_0_40px_rgba(8,43,114,0.4)] hover:bg-secondary transition-all hover:scale-105 flex items-center justify-center gap-2 text-lg">
+                  Enter Dashboard <ChevronRight className="w-5 h-5" />
                 </Link>
               ) : (
-                <Link to="/register" className="bg-accent text-white font-medium px-8 py-4 rounded-xl shadow-lg shadow-orange-500/30 hover:bg-orange-600 transition-all hover:-translate-y-1 flex items-center gap-2">
-                  Get Started Now <ChevronRight className="w-5 h-5" />
+                <Link to="/register" className="bg-accent text-white font-bold px-10 py-5 rounded-2xl shadow-[0_0_40px_rgba(255,122,0,0.3)] hover:bg-orange-600 transition-all hover:scale-105 flex items-center justify-center gap-2 text-lg">
+                  Start for free <ChevronRight className="w-5 h-5" />
                 </Link>
               )}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </main>
 
       {/* Features Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-24 relative z-10 border-t border-white/5 bg-black/50 backdrop-blur-3xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">Everything you need in one place</h2>
-            <p className="mt-4 text-gray-600">Experience seamless payments across all major networks and providers.</p>
-          </div>
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={stagger}
+            className="text-center mb-20"
+          >
+            <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">Everything you need.</motion.h2>
+            <motion.p variants={fadeUp} className="mt-4 text-xl text-gray-400">Experience seamless payments across all major networks.</motion.p>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={stagger}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             <FeatureCard 
-              icon={<Phone className="w-6 h-6 text-blue-600" />}
+              icon={<Phone className="w-6 h-6 text-primary" />}
               title="Airtime & Data"
               desc="Instant top-ups for MTN, Airtel, Glo, and 9mobile with amazing discounts."
-              color="bg-blue-50"
             />
             <FeatureCard 
-              icon={<Tv className="w-6 h-6 text-purple-600" />}
+              icon={<Tv className="w-6 h-6 text-accent" />}
               title="Cable TV"
               desc="Never miss a moment. Instant subscription for DSTV, GOTV, and Startimes."
-              color="bg-purple-50"
             />
             <FeatureCard 
-              icon={<Lightbulb className="w-6 h-6 text-yellow-600" />}
+              icon={<Lightbulb className="w-6 h-6 text-yellow-500" />}
               title="Electricity"
               desc="Recharge your prepaid meters instantly. Supports all major DisCos."
-              color="bg-yellow-50"
             />
             <FeatureCard 
-              icon={<Zap className="w-6 h-6 text-orange-600" />}
+              icon={<Zap className="w-6 h-6 text-purple-500" />}
               title="Fast Processing"
               desc="Transactions are processed and delivered in milliseconds."
-              color="bg-orange-50"
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-20 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Why thousands choose Depayhub</h2>
-              <ul className="space-y-6">
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute right-0 top-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full mix-blend-screen filter blur-[150px] translate-x-1/2 -translate-y-1/2" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-20">
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={stagger}
+              className="lg:w-1/2"
+            >
+              <motion.h2 variants={fadeUp} className="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tight">Why thousands choose Depayhub</motion.h2>
+              <div className="space-y-8">
                 {[
                   'Bank-grade security encryption for all transactions',
                   'Automated wallet funding system',
                   'Earn commissions through our referral program',
                   '24/7 dedicated customer support'
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-6 h-6 text-green-500 shrink-0" />
-                    <span className="text-gray-700 font-medium">{item}</span>
-                  </li>
+                  <motion.div variants={fadeUp} key={i} className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-accent" />
+                    </div>
+                    <span className="text-xl text-gray-300 font-medium">{item}</span>
+                  </motion.div>
                 ))}
-              </ul>
-            </div>
-            <div className="lg:w-1/2 bg-gradient-to-br from-primary to-secondary rounded-3xl p-8 lg:p-12 text-white shadow-2xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl" />
-               <h3 className="text-2xl font-bold mb-4">Ready to simplify your payments?</h3>
-               <p className="text-blue-100 mb-8">Join the platform that puts convenience and security first. Registration takes less than 2 minutes.</p>
-               {!user && (
-                 <Link to="/register" className="inline-block bg-white text-primary font-bold px-6 py-3 rounded-xl hover:bg-gray-50 transition-colors">
-                   Create Free Account
-                 </Link>
-               )}
-            </div>
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
+              whileInView={{ opacity: 1, scale: 1, rotateX: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, type: "spring" }}
+              className="lg:w-1/2 w-full perspective-1000"
+            >
+              <div className="bg-gradient-to-br from-white/10 to-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-10 lg:p-14 shadow-2xl relative overflow-hidden">
+                 <div className="absolute top-0 right-0 w-64 h-64 bg-accent/20 opacity-50 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl" />
+                 <h3 className="text-3xl font-extrabold mb-4 text-white">Ready to simplify your payments?</h3>
+                 <p className="text-gray-400 mb-10 text-lg">Join the platform that puts convenience and security first. Registration takes less than 2 minutes.</p>
+                 {!user && (
+                   <Link to="/register" className="inline-block bg-white text-black font-bold px-8 py-4 rounded-xl hover:bg-gray-200 transition-colors shadow-lg shadow-white/10">
+                     Create Free Account
+                   </Link>
+                 )}
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-100 py-12">
+      <footer className="border-t border-white/5 py-12 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex justify-center items-center gap-2 mb-4">
-            <Shield className="w-6 h-6 text-primary" />
-            <span className="text-xl font-bold text-gray-900">Depayhub</span>
+          <div className="flex justify-center items-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-black border border-white/10 rounded-lg flex items-center justify-center">
+              <Shield className="w-4 h-4 text-accent" />
+            </div>
+            <span className="text-xl font-bold text-gray-300 tracking-tight">DEPAYHUB</span>
           </div>
-          <p className="text-gray-500">© {new Date().getFullYear()} Depayhub. All rights reserved.</p>
+          <p className="text-gray-600 font-medium">© {new Date().getFullYear()} Depayhub. All rights reserved.</p>
         </div>
       </footer>
     </div>
   );
 };
 
-const FeatureCard = ({ icon, title, desc, color }: { icon: React.ReactNode, title: string, desc: string, color: string }) => (
-  <div className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300">
-    <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center mb-6`}>
-      {icon}
-    </div>
-    <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
-    <p className="text-gray-600 leading-relaxed">{desc}</p>
-  </div>
-);
+const FeatureCard = ({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) => {
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <motion.div 
+      variants={itemVariants}
+      className="bg-white/5 border border-white/5 rounded-3xl p-8 hover:bg-white/10 hover:border-white/10 transition-all duration-300 group cursor-pointer backdrop-blur-sm"
+    >
+      <div className="w-14 h-14 bg-black/50 border border-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+        {icon}
+      </div>
+      <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-gray-400 leading-relaxed font-medium">{desc}</p>
+    </motion.div>
+  );
+};

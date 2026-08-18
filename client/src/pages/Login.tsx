@@ -105,7 +105,7 @@ export const Login = () => {
                 required
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-xl pl-11 pr-4 py-3.5 focus:ring-2 focus:ring-primary focus:border-transparent transition text-lg tracking-[0.5em] font-bold shadow-sm" 
+                className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl pl-11 pr-4 py-3.5 focus:ring-2 focus:ring-primary focus:border-transparent transition text-lg tracking-[0.5em] font-bold shadow-sm text-white placeholder-gray-600" 
                 placeholder="••••" 
               />
             </div>
@@ -118,12 +118,12 @@ export const Login = () => {
             </label>
           </div>
 
-          <button type="submit" disabled={isLoading} className="w-full bg-primary text-white font-semibold py-4 rounded-xl shadow-md hover:bg-secondary transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+          <button type="submit" disabled={isLoading} className="w-full bg-accent text-white font-bold py-4 rounded-xl shadow-lg shadow-orange-500/20 hover:bg-orange-600 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
             {isLoading ? 'Unlocking...' : 'Sign In'}
             {!isLoading && <span className="text-lg">→</span>}
           </button>
           
-          <button type="button" onClick={handleBiometricUnlock} className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-100 transition active:scale-[0.98]">
+          <button type="button" onClick={handleBiometricUnlock} className="w-full flex items-center justify-center gap-2 py-4 bg-[#1A1A1A] border border-white/10 text-gray-300 font-semibold rounded-xl hover:bg-white/5 transition active:scale-[0.98]">
             <Fingerprint className="w-5 h-5" />
             Use Biometrics
           </button>
@@ -151,7 +151,7 @@ export const Login = () => {
               required
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-xl pl-11 pr-4 py-3.5 focus:ring-2 focus:ring-primary focus:border-transparent transition shadow-sm text-gray-900" 
+              className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl pl-11 pr-4 py-3.5 focus:ring-2 focus:ring-primary focus:border-transparent transition shadow-sm text-white placeholder-gray-500" 
               placeholder="Enter your email or username" 
             />
           </div>
@@ -171,7 +171,7 @@ export const Login = () => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-xl pl-11 pr-12 py-3.5 focus:ring-2 focus:ring-primary focus:border-transparent transition shadow-sm text-gray-900" 
+              className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl pl-11 pr-12 py-3.5 focus:ring-2 focus:ring-primary focus:border-transparent transition shadow-sm text-white placeholder-gray-500" 
               placeholder="Enter your password" 
             />
             <button 
