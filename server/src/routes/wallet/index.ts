@@ -22,7 +22,7 @@ const walletRoutes: FastifyPluginAsync = async (server) => {
     try {
       await request.jwtVerify()
     } catch (err) {
-      if (request.routerPath !== '/api/wallet/webhook') {
+      if (request.routeOptions.url !== '/api/wallet/webhook') {
         reply.send(err)
       }
     }

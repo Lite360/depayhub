@@ -34,7 +34,7 @@ const externalApiRoutes: FastifyPluginAsync = async (server) => {
     await prisma.apiUsage.create({
       data: {
         apiKeyId: verifyResult.apiKeyId!,
-        endpoint: request.routerPath,
+        endpoint: request.routeOptions.url ?? request.url,
         method: request.method,
         statusCode: 200, // Will update at the end ideally
         ip: request.ip
