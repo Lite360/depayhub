@@ -1,0 +1,1102 @@
+Depayhub: Complete PRD + MVP + Development Prompt
+1. Product Overview
+
+Product name: Depayhub
+Category: Nigerian VTU, digital services, wallet and payment platform
+Primary users: Subscribers and Vendors
+Default role: Subscriber
+Upgrade: Subscriber → Vendor after application and admin approval
+
+Core services
+Airtime
+Data
+Recharge PIN
+Cable TV subscriptions
+Electricity bills
+NIN services
+BVN-related services where legally permitted and supported by the selected provider
+Wallet funding
+Vendor/API access
+Referral system
+Payment funding
+
+Depayhub does not use card payments.
+
+Wallet funding is through:
+
+PaymentPoint → PalmPay account
+Aspify → Paga account
+
+The payment provider credentials remain strictly server-side.
+
+2. Technology Stack
+Frontend
+React
+Vite
+TypeScript
+Tailwind CSS
+Lucide React
+PWA
+Mobile-first responsive design
+Backend
+Fastify
+TypeScript
+Prisma ORM
+Database
+Neon PostgreSQL
+Storage
+Vercel Blob
+
+Used for:
+
+Receipt files
+User-uploaded documents where required
+Marketing images
+Banners
+Other controlled media
+Deployment
+Vercel
+Custom domain
+HTTPS
+Environment variables/secrets
+External services
+
+Payment:
+
+PaymentPoint
+Aspify
+
+VTU:
+
+VTU Naija
+Inlomax
+LixzDataSub
+Other providers through a provider-adapter architecture
+
+NIN:
+
+NINSlip/provider API or another authorized NIN provider
+
+Email:
+
+Transactional email provider such as Resend
+3. Design System
+
+Depayhub should use the same visual language as the phone UI in the approved flyer.
+
+Primary colors
+Primary Blue
+#082B72
+
+
+Secondary Blue
+#0D3E99
+
+
+Primary Orange
+#FF7A00
+
+
+Background
+#F6F8FC
+
+
+White
+#FFFFFF
+UI style
+Modern Nigerian fintech aesthetic
+Mobile-first
+Rounded cards
+Clean spacing
+Blue wallet cards
+Orange CTAs
+White content cards
+Subtle shadows
+Clear typography
+Simple icons
+Bottom navigation on mobile
+Responsive desktop layout
+
+The PWA and flyer must visually feel like the same product.
+
+4. User Roles
+Subscriber
+
+Every registration creates:
+
+role = subscriber
+
+Subscribers can:
+
+Fund wallet
+Buy airtime
+Buy data
+Buy recharge PIN
+Pay cable TV
+Pay electricity
+Access supported NIN services
+View transaction history
+Download receipts
+Generate share receipts
+Refer users
+Manage profile
+Manage security
+Use PIN/passkey
+View notifications
+Vendor
+
+A subscriber can request Vendor status.
+
+Subscriber
+   ↓
+Vendor Application
+   ↓
+Admin Review
+   ↓
+Approved
+   ↓
+Vendor
+
+Vendor status:
+
+NOT_APPLIED
+PENDING
+APPROVED
+REJECTED
+SUSPENDED
+
+Vendors get additional features:
+
+Vendor pricing
+Sales dashboard
+Profit reporting
+Customer management
+Vendor transaction reports
+API access where enabled
+Vendor-specific services/pricing
+5. Registration
+
+Registration should be a three-step process.
+
+Step 1: Personal information
+Full Name
+Username
+Email
+Step 2: Security
+Password
+Confirm Password
+4-digit Transaction PIN
+
+The PIN should be stored as a secure hash, never plaintext.
+
+Step 3: Referral/profile information
+Referral Code
+Optional information
+Terms acceptance
+Privacy acceptance
+
+On successful registration:
+
+Create user
+Create wallet
+Create security profile
+Create default subscriber role
+Create referral relationship
+Create initial security event
+Send welcome email
+6. User Wallet
+
+Every user gets a wallet automatically.
+
+User
+ ↓
+Wallet
+ ↓
+Ledger
+
+Do not rely on a single mutable balance field as the source of truth.
+
+Use an immutable transaction ledger.
+
+Example:
+
+wallet
+wallet_transactions
+ledger_entries
+
+Every financial movement must have a unique reference.
+
+7. Funding
+Funding methods
+Fund Wallet
+     │
+     ├── PaymentPoint
+     │      └── PalmPay
+     │
+     └── Aspify
+            └── Paga
+
+No card payment.
+
+Funding flow
+User
+ ↓
+Fund Wallet
+ ↓
+Select available funding method
+ ↓
+Generate/identify funding account
+ ↓
+User transfers money
+ ↓
+Provider webhook
+ ↓
+Verify webhook
+ ↓
+Verify amount/reference/account
+ ↓
+Idempotency check
+ ↓
+Credit wallet
+ ↓
+Ledger entry
+ ↓
+Real-time notification
+ ↓
+Email receipt
+
+Never credit a wallet solely because a frontend says payment was made.
+
+8. Pricing Engine
+
+Admin controls pricing.
+
+Each service can have:
+
+Provider Cost
+Subscriber Price
+Vendor Price
+API Price
+
+Example:
+
+MTN 1GB
+
+
+Provider Cost:      ₦700
+Subscriber Price:   ₦800
+Vendor Price:       ₦750
+API Price:          ₦730
+Frontend behavior
+
+Subscriber sees:
+
+MTN 1GB
+₦800
+
+Vendor sees:
+
+MTN 1GB
+₦750
+
+API customer is charged:
+
+₦730
+
+The frontend must never determine the final price.
+
+The backend calculates the applicable price from:
+
+user role
++
+service
++
+pricing configuration
+
+Provider cost must never be exposed to normal users.
+
+9. Transaction Processing
+
+Every transaction should have:
+
+transaction_id
+reference
+user_id
+wallet_id
+service
+provider
+provider_reference
+amount
+provider_cost
+status
+created_at
+updated_at
+
+Statuses:
+
+PENDING
+PROCESSING
+SUCCESSFUL
+FAILED
+REVERSED
+REFUNDED
+Transaction flow
+User requests service
+        ↓
+Authenticate
+        ↓
+Validate request
+        ↓
+Determine role
+        ↓
+Determine price
+        ↓
+Check wallet balance
+        ↓
+Create transaction
+        ↓
+Reserve/debit wallet atomically
+        ↓
+Call provider
+        ↓
+Receive response/webhook
+        ↓
+Update transaction
+        ↓
+Finalize/refund if required
+        ↓
+Generate receipt
+        ↓
+Email receipt
+        ↓
+Real-time UI update
+10. Provider Architecture
+
+Do not hard-code the application directly against one VTU provider.
+
+Create a provider adapter layer.
+
+ProviderManager
+       │
+       ├── VTU Naija
+       ├── Inlomax
+       ├── LixzDataSub
+       ├── PaymentPoint
+       ├── Aspify
+       └── NIN Provider
+
+Each provider should implement standardized methods.
+
+Example:
+
+purchaseAirtime()
+purchaseData()
+purchaseCable()
+purchaseElectricity()
+checkTransaction()
+getBalance()
+
+This allows admin to change providers without rebuilding the entire platform.
+
+11. Provider Failover
+
+For services where multiple providers are available:
+
+Primary Provider
+      ↓
+Failure
+      ↓
+Secondary Provider
+
+But failover must be carefully controlled.
+
+Never automatically retry a financial transaction if the first provider may have already processed it.
+
+Use provider transaction status/reconciliation first.
+
+12. Receipts
+
+Depayhub has two receipt types.
+
+Normal Receipt
+
+Shows:
+
+Logo
+Service
+Product
+Phone/account
+Amount
+Fee
+Total
+Reference
+Date
+Status
+Share Receipt
+
+Shows:
+
+Depayhub branding
+Service purchased
+Product/package
+Recipient/account, masked where appropriate
+Date
+Reference
+Status
+
+But does not show price.
+
+Watermark
+
+Both receipts contain the Depayhub logo as a repeated watermark across the document.
+
+Receipts should be:
+
+Viewable online
+Downloadable
+Printable
+Shareable
+13. Email System
+
+Email users for every login attempt.
+
+Successful login
+
+Send:
+
+Device
+Browser
+Approximate IP location
+IP address, preferably masked
+Date/time
+Authentication method
+Failed login
+
+Send a security alert.
+
+Transaction emails
+
+Every transaction generates an email.
+
+Includes:
+
+Transaction status
+Service
+Amount where applicable
+Reference
+Date
+Receipt
+
+For failed transactions:
+
+FAILED
+
+For pending:
+
+PROCESSING
+
+For refunds:
+
+REFUND / REVERSAL
+
+Do not expose:
+
+Password
+PIN
+API secrets
+Full NIN/BVN unnecessarily
+14. Authentication
+
+Support:
+
+Registration
+
+Password + 4-digit PIN.
+
+Login
+
+Support:
+
+Password
+PIN
+Passkey/WebAuthn
+
+Biometrics should be handled through the device's authentication system. Depayhub should not store fingerprint or Face ID data.
+
+Device security
+
+Maintain a trusted-device/session model.
+
+The user can see:
+
+Current Device
+Device Name
+Browser
+Last Active
+IP
+Approx. Location
+
+Allow:
+
+Log out other sessions
+Revoke device
+15. Location and Security Monitoring
+
+Record IP-derived approximate location on security events.
+
+Optional browser GPS location can be requested with explicit user permission.
+
+Security event:
+
+IP
+Country
+State
+City
+Approximate coordinates
+Device
+Browser
+Timestamp
+
+Do not silently track precise GPS location.
+
+Location should be a security signal, not the sole fraud decision.
+
+16. Fraud Protection
+
+Create a risk engine using:
+
+IP
+Device
+Account
+Login history
+Transaction velocity
+Funding behavior
+Location signals
+Failed authentication
+Multiple account patterns
+
+Do not rely solely on IP because Nigerian mobile networks can use shared/NAT addresses.
+
+17. Security
+
+Depayhub must implement:
+
+Application security
+HTTPS
+CSRF protection where applicable
+CORS restrictions
+CSP
+XSS protection
+Input validation
+Output encoding
+Secure headers
+Rate limiting
+Request size limits
+Secure cookies
+Session expiration
+SQL injection
+
+Use Prisma parameterized queries.
+
+Never concatenate user input into raw SQL.
+
+Authentication
+Argon2id password hashing
+Hashed PIN
+Secure sessions
+Passkey/WebAuthn
+Brute-force protection
+Login attempt throttling
+API
+API authentication
+API key hashing
+Rate limits
+Permissions/scopes
+Idempotency
+Request logging
+API key revocation
+18. Nigeria Fast API Keys → Depayhub API Keys
+
+Depayhub will issue its own API keys to approved API/Vendor users.
+
+Example:
+
+NF_live_xxxxxxxxxxxxxxxxx
+
+Provider API credentials remain separate.
+
+Depayhub
+   │
+   ├── Provider credentials
+   │
+   └── Customer API keys
+
+API keys should be:
+
+Hashed in database
+Shown completely only once
+Revocable
+Rotatable
+Scope-limited
+Rate-limited
+Audited
+
+Example permissions:
+
+Airtime ✓
+Data ✓
+Cable ✓
+Electricity ✓
+NIN ✗
+BVN ✗
+19. Admin Dashboard
+
+Admin must have a completely separate route.
+
+Example:
+
+/app
+/app/login
+/app/dashboard
+
+
+/admin
+/admin/login
+/admin/dashboard
+
+Do not rely on frontend route hiding.
+
+Backend authorization must enforce admin permissions.
+
+Admin modules
+Dashboard
+Users
+Subscribers
+Vendors
+Vendor Applications
+Wallets
+Transactions
+Funding
+Services
+Service Plans
+Providers
+Pricing
+API Management
+KYC
+Receipts
+Referrals
+Marketing
+Banners
+Notifications
+Support
+Security Logs
+Audit Logs
+System Settings
+20. Admin Pricing Dashboard
+
+Admin can configure:
+
+Service
+Provider
+Provider Cost
+Subscriber Price
+Vendor Price
+API Price
+Status
+
+Also:
+
+Bulk pricing
+Search
+Filter
+Network
+Service category
+Provider
+
+All pricing changes should be audited.
+
+Example:
+
+Admin John
+Changed MTN 1GB
+Subscriber ₦800 → ₦820
+17 Aug 2026
+10:30 AM
+21. Marketing System
+
+Admin can create:
+
+Banners
+Image
+Title
+Description
+CTA
+URL
+Start date
+End date
+Status
+Popups
+Title
+Message
+Image
+CTA
+Target audience
+Frequency
+Notifications
+
+Target:
+
+All users
+Subscribers
+Vendors
+Specific users
+
+Marketing must be separated from security notifications.
+
+22. WhatsApp Widget
+
+Floating WhatsApp button.
+
+When clicked:
+
+WhatsApp
+│
+├── Join Community
+└── Chat Directly
+
+Admin can configure the destination numbers/group links.
+
+23. Real-Time System
+
+No page refresh should be required for:
+
+Wallet balance
+Transaction status
+Funding status
+Notifications
+Admin pricing updates
+Provider transaction updates
+
+Example:
+
+Provider webhook
+       ↓
+Backend
+       ↓
+Database
+       ↓
+Real-time event
+       ↓
+React dashboard
+24. PWA
+
+Depayhub should be installable on:
+
+Android
+
+Chrome:
+
+Install Depayhub
+iPhone
+
+Safari:
+
+Share
+ ↓
+Add to Home Screen
+
+PWA features:
+
+Standalone mode
+App icon
+Splash/startup experience
+Offline shell
+Cached static assets
+Responsive mobile UI
+Safe-area support
+Install instructions
+
+Financial transactions should never depend on offline cached data.
+
+25. Referral System
+
+Each user gets:
+
+Referral Code
+Referral Link
+
+Track:
+
+Referrer
+Referred user
+Registration
+Qualification
+Reward
+Status
+
+Admin controls:
+
+Reward amount
+Qualification rules
+Campaign
+Maximum rewards
+26. Database Core Tables
+
+Recommended initial schema:
+
+users
+roles
+permissions
+role_permissions
+
+
+sessions
+trusted_devices
+passkeys
+security_events
+
+
+wallets
+wallet_transactions
+ledger_entries
+
+
+transactions
+transaction_items
+
+
+service_categories
+service_plans
+providers
+provider_services
+
+
+pricing
+pricing_history
+
+
+funding_accounts
+funding_transactions
+payment_webhooks
+
+
+vendor_applications
+
+
+api_keys
+api_key_scopes
+api_usage
+
+
+referrals
+referral_rewards
+
+
+receipts
+receipt_items
+
+
+notifications
+email_events
+
+
+banners
+marketing_campaigns
+
+
+support_tickets
+
+
+audit_logs
+system_settings
+27. MVP
+
+The first production MVP should not try to launch every feature simultaneously.
+
+Phase 1: Foundation
+React PWA
+Fastify backend
+Neon PostgreSQL
+Prisma
+Authentication
+Subscriber registration
+Login
+4-digit PIN
+Wallet
+User dashboard
+Admin dashboard
+RBAC
+Basic security logging
+Phase 2: Funding
+PaymentPoint PalmPay funding
+Aspify Paga funding
+Webhooks
+Idempotency
+Wallet ledger
+Funding receipts
+Email notifications
+Phase 3: VTU
+
+Launch:
+
+Airtime
+Data
+Recharge PIN
+Cable TV
+Electricity
+
+with:
+
+Provider adapter
+Pricing engine
+Subscriber pricing
+Vendor pricing
+Transaction history
+Real-time status
+Phase 4: Vendor
+Vendor application
+Admin approval
+Vendor dashboard
+Vendor pricing
+Vendor reports
+Phase 5: Receipts + Notifications
+Normal receipt
+Share receipt
+PDF
+Watermark
+Email receipt
+Login alerts
+Push/browser notifications
+Phase 6: API
+API keys
+API documentation
+API dashboard
+API wallet
+API pricing
+API scopes
+API usage
+Webhooks
+Phase 7: Advanced
+NIN services
+BVN services where permitted
+Referral system
+Marketing engine
+WhatsApp widget
+Fraud/risk engine
+Advanced reconciliation
+Provider failover
+28. Non-Functional Requirements
+Performance
+
+Target:
+
+Frontend load < 2.5s
+API p95 < 500ms for normal operations
+
+Provider calls are excluded from the normal API latency target because external providers can be slower.
+
+Reliability
+
+Financial operations must support:
+
+Idempotency
+Atomic wallet operations
+Transaction reconciliation
+Retry strategy
+Provider status checking
+Refund/reversal processing
+Security
+
+Target:
+
+OWASP Top 10
+OWASP API Security
+Strong RBAC
+Secure secrets management
+Auditability
+29. Master Development Prompt
+
+Use this as the main prompt when giving the project to an AI coding agent:
+
+Build a production-ready Nigerian VTU and digital payment platform called DEPAYHUB.
+
+
+Design the project to deploy on Vercel.
+
+
+Use environment variables for all secrets.
+
+
+Never put provider API secrets in React/Vite client-side variables.
+
+
+Use Neon PostgreSQL for production database.
+
+
+Use Vercel Blob for file storage.
+
+
+DATABASE:
+
+
+Create proper Prisma schema and migrations.
+
+
+Use UUID/CUID identifiers as appropriate.
+
+
+Use unique constraints for:
+- usernames
+- emails
+- references
+- webhook event IDs
+- API key identifiers
+
+
+Use database transactions for wallet operations.
+
+
+Do not use floating point for money.
+Store monetary values using PostgreSQL NUMERIC/DECIMAL or integer minor units.
+
+
+DOCUMENTATION:
+
+
+Generate:
+- README
+- Environment variable documentation
+- API documentation
+- Database schema documentation
+- Deployment guide
+- Security guide
+- Provider integration guide
+
+
+Build the system modularly and avoid duplicated business logic.
+
+
+Never place financial logic in React.
+
+
+Never trust client-supplied:
+- price
+- role
+- wallet balance
+- transaction status
+- provider status
+
+
+The backend is the source of truth.
+
+
+Start by generating the architecture, database schema, route structure and authentication model before implementing individual services.
+MVP launch target
+
+For the first real Depayhub release, I would keep the launch scope to:
+
+Registration → Subscriber dashboard → Wallet → PaymentPoint/Aspify funding → Airtime/Data → Cable/Electricity → Transactions → Receipts → Email alerts → Admin pricing → Vendor application.
+
+Then add NIN/BVN, public API, advanced fraud detection, referrals and sophisticated marketing after the core wallet/payment flow has been properly tested.
+
+That gives you a much safer MVP than trying to launch every module at once.

@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-gray-900 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-accent text-white font-medium py-3 px-6 rounded-xl shadow-sm hover:bg-orange-600 transition-colors duration-200 active:scale-[0.98];
+  }
+  
+  .card {
+    @apply bg-surface rounded-2xl p-6 shadow-sm border border-gray-100;
+  }
+  
+  .wallet-card {
+    @apply bg-gradient-to-br from-primary to-secondary text-white rounded-2xl p-6 shadow-md relative overflow-hidden;
+  }
+}
