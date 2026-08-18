@@ -14,7 +14,8 @@ export default {
         surface: '#FFFFFF'
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Outfit', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       }
     },
   },
