@@ -41,7 +41,7 @@ export const Login = () => {
 
       localStorage.setItem('depayhub_saved_user', res.user.username);
       login(res.token, res.user);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to login');
     } finally {
@@ -64,7 +64,7 @@ export const Login = () => {
       });
 
       login(res.token, res.user);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Invalid PIN');
     } finally {

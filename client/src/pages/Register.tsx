@@ -42,7 +42,7 @@ export const Register = () => {
       });
 
       login(res.token, res.user);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to register');
     } finally {

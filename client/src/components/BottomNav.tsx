@@ -8,7 +8,7 @@ export const BottomNav = () => {
     <nav className="fixed bottom-0 w-full max-w-md bg-surface border-t border-gray-100 px-6 py-4 flex justify-between items-center z-40 rounded-t-3xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
       
       {/* Home Link */}
-      <Link to="/" className={`flex flex-col items-center gap-1 transition ${location.pathname === '/' ? 'text-primary' : 'text-gray-400 hover:text-gray-600'}`}>
+      <Link to="/dashboard" className={`flex flex-col items-center gap-1 transition ${location.pathname === '/dashboard' ? 'text-primary' : 'text-gray-400 hover:text-gray-600'}`}>
         <Home className="w-6 h-6" />
         <span className="text-[10px] font-medium">Home</span>
       </Link>
