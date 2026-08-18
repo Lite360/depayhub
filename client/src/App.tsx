@@ -8,6 +8,7 @@ import { ProfilePage } from './pages/Profile';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Landing } from './pages/Landing';
+import { ForgotPassword } from './pages/ForgotPassword';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
