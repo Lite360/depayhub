@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { PublicHeader } from '../components/PublicHeader';
-import { motion } from 'framer-motion';
 
 export const Landing = () => {
   const { user } = useAuth();
