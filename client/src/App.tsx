@@ -9,6 +9,10 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Landing } from './pages/Landing';
 import { ForgotPassword } from './pages/ForgotPassword';
+import { Services } from './pages/Services';
+import { Pricing } from './pages/Pricing';
+import { FAQ } from './pages/FAQ';
+import { Contact } from './pages/Contact';
 
 function App() {
   return (
@@ -19,6 +23,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/contact" element={<Contact />} />
           
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>

@@ -1,6 +1,37 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm install && npm run build",
-  "outputDirectory": "client/dist",
-  "installCommand": "echo 'Handled in buildCommand'"
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/serverless.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["server/src/**", "server/prisma/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/serverless.ts"
+    },
+    {
+      "src": "/health",
+      "dest": "/api/serverless.ts"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/index.html"
+    }
+  ]
 }
+

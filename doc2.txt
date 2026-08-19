@@ -1,2 +1,10 @@
 biometics login/pin login ( welcomeback login)
 verify/makre transtion  with pin/biometrics
+
+
+
+
+cd server
+npm run build
+cd client
+npm run build
